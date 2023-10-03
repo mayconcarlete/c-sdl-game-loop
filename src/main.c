@@ -5,6 +5,7 @@
 #include "SDL2/SDL.h"
 #include "config.h"
 
+bool game_is_running = false;
 SDL_Window* window;
 SDL_Renderer* renderer;
 
@@ -38,12 +39,54 @@ bool initialize_window(void){
     return true;
 }
 
+void setup(){
+    // todo
+}
+
+void process_input(){
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    switch(event.type){
+        case SDL_QUIT:
+            game_is_running = false;
+            break;
+        case SDL_KEYDOWN:
+            if(event.key.keysym.sym == SDLK_ESCAPE){
+                game_is_running = false;
+            }
+            break;
+    }
+}
+
+void update(){
+    // todo
+}
+
+void render(){
+    // todo
+}
+
+void destroy_window(){
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 
 int main(){
-    bool initialize_is_success = initialize_window();
-    if(initialize_is_success == false){
+    game_is_running = initialize_window();
+    if(game_is_running == false){
         return -1;
     }
-    printf("Hello from peskland\n");
+
+    setup();
+
+    while(game_is_running){
+       process_input();
+       update();
+       render();
+    }
+out:
+    destroy_window();
     return 0;
 }
