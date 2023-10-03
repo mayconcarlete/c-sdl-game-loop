@@ -3,7 +3,7 @@ CFLAGS= -g -w -Wall
 INCLUDE= -I ./include
 
 compile:
-	$(CC) $(CFLAGS) $(INCLUDE) ./src/main.c -o ./bin/main
+	$(CC) $(CFLAGS) $(INCLUDE) ./src/main.c -L ./lib -lSDL2main -lSDL2 -o ./bin/main
 
 clean:
 	rm -rf ./bin/*
