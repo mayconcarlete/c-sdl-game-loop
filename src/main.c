@@ -8,6 +8,8 @@
 bool game_is_running = false;
 SDL_Window* window;
 SDL_Renderer* renderer;
+int last_frame_time = 0;
+
 struct ball {
     float x;
     float y;
@@ -70,7 +72,10 @@ void process_input(){
 }
 
 void update(){
-    // todo
+    // todo:
+    // Logic to keep the timestep
+    while(!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TARGET_TIME));
+    last_frame_time = SDL_GetTicks();
     ball.x += 1;
     ball.y +=1;
 }
