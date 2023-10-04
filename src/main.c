@@ -71,6 +71,8 @@ void process_input(){
 
 void update(){
     // todo
+    ball.x += 1;
+    ball.y +=1;
 }
 
 void render(){
