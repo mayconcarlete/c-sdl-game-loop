@@ -10,12 +10,14 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 int last_frame_time = 0;
 
-struct ball {
-    float x;
-    float y;
+struct game_object {
+    float posX;
+    float posY;
     float width;
     float height;
-} ball ;
+    float velX;
+    float velY;
+} ball, paddle;
 
 bool initialize_window(void){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -49,10 +51,12 @@ bool initialize_window(void){
 
 void setup(){
     // todo
-    ball.x = 20;
-    ball.y = 20;
-    ball.width = 15;
-    ball.height = 15;
+    paddle.width = 100;
+    paddle.height = 15;
+    paddle.velX = 0;
+    paddle.velY = 0;
+    paddle.posX = (WINDOW_WIDTH - paddle.width)/2;
+    paddle.posY = (WINDOW_HEIGHT - ball.height - 30);
 }
 
 void process_input(){
@@ -67,6 +71,22 @@ void process_input(){
             if(event.key.keysym.sym == SDLK_ESCAPE){
                 game_is_running = false;
             }
+
+            if(event.key.keysym.sym == SDLK_LEFT){
+                paddle.velX = -400;
+            }
+
+            if(event.key.keysym.sym == SDLK_RIGHT){
+                paddle.velX = 400;
+            }
+            break;
+        case SDL_KEYUP:
+            if(event.key.keysym.sym == SDLK_LEFT){
+                paddle.velX = 0;
+            }
+            if(event.key.keysym.sym == SDLK_RIGHT){
+                paddle.velX = 0;
+            }
             break;
     }
 }
@@ -79,12 +99,13 @@ void update(){
     if(time_to_wait > 0 && time_to_wait < FRAME_TARGET_TIME){
         SDL_Delay(time_to_wait);
     }
-    
+
     float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f; // get delta time factor to convert from pixel/frame to pixels/second
     last_frame_time = SDL_GetTicks();
 
-    ball.x +=  delta_time * 70;
-    ball.y += delta_time * 50;
+    // logic here;
+    paddle.posX += paddle.velX * delta_time;
+
 }
 
 void render(){
@@ -93,14 +114,14 @@ void render(){
     SDL_RenderClear(renderer);
 
     // draw here;
-    SDL_Rect ball_rect = {
-        ball.x,
-        ball.y,
-        ball.width,
-        ball.height
-    };
+    SDL_Rect paddle_rect;
+    paddle_rect.x = paddle.posX;
+    paddle_rect.y = paddle.posY;
+    paddle_rect.w = paddle.width;
+    paddle_rect.h = paddle.height;
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255,255);
-    SDL_RenderFillRect(renderer, &ball_rect);
+    SDL_RenderFillRect(renderer, &paddle_rect);
 
     SDL_RenderPresent(renderer);
 }
