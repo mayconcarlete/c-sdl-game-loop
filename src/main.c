@@ -81,13 +81,10 @@ void update(){
     }
     
     float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f; // get delta time factor to convert from pixel/frame to pixels/second
+    last_frame_time = SDL_GetTicks();
 
     ball.x +=  delta_time * 70;
     ball.y += delta_time * 50;
-
-
-
-    last_frame_time = SDL_GetTicks();
 }
 
 void render(){
