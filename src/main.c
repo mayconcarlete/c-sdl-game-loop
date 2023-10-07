@@ -55,8 +55,15 @@ void setup(){
     paddle.height = 15;
     paddle.velX = 0;
     paddle.velY = 0;
-    paddle.posX = (WINDOW_WIDTH - paddle.width)/2;
+    paddle.posX = 320;
     paddle.posY = (WINDOW_HEIGHT - ball.height - 30);
+
+    ball.width = 15;
+    ball.height = 15;
+    ball.velX = 90;
+    ball.velY = 100;
+    ball.posX = WINDOW_WIDTH / 2;
+    ball.posY = WINDOW_HEIGHT / 2;
 }
 
 void process_input(){
@@ -67,6 +74,7 @@ void process_input(){
         case SDL_QUIT:
             game_is_running = false;
             break;
+
         case SDL_KEYDOWN:
             if(event.key.keysym.sym == SDLK_ESCAPE){
                 game_is_running = false;
@@ -80,10 +88,12 @@ void process_input(){
                 paddle.velX = 400;
             }
             break;
+
         case SDL_KEYUP:
             if(event.key.keysym.sym == SDLK_LEFT){
                 paddle.velX = 0;
             }
+
             if(event.key.keysym.sym == SDLK_RIGHT){
                 paddle.velX = 0;
             }
@@ -92,20 +102,41 @@ void process_input(){
 }
 
 void update(){
-    // todo:
-    // Logic to keep the timestep
-    // while(!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TARGET_TIME));
     int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - last_frame_time);
     if(time_to_wait > 0 && time_to_wait < FRAME_TARGET_TIME){
         SDL_Delay(time_to_wait);
     }
 
-    float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f; // get delta time factor to convert from pixel/frame to pixels/second
+    float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f;
     last_frame_time = SDL_GetTicks();
 
-    // logic here;
-    paddle.posX += paddle.velX * delta_time;
+    // it checks the collision with the paddle
+    if(
+        ball.posY + ball.height >= paddle.posY
+        && ball.posX <= paddle.posX + paddle.width
+        && ball.posX + ball.width >= paddle.posX
+        ){
+        ball.velY = -ball.velY;
+    }
+    // it checks for colission on top of the window
+    if(ball.posY <= 0) {
+        ball.velY = -ball.velY;
+    }
+    // it checks for colision with right window
+    if(ball.posX <= 0){
+        ball.velX = - ball.velX;
+    }
+    // it checks for colision with left window
+    if(ball.posX + ball.width >= WINDOW_WIDTH){
+        ball.velX = -ball.velX;
+    }
 
+
+    ball.posX += ball.velX * delta_time;
+    ball.posY += ball.velY * delta_time;
+    paddle.posX += paddle.velX * delta_time ;
+
+    printf("Paddle X: %.2f - sum: %.2f ball x: %.2f  y: %.2f\n", paddle.posX,paddle.posX + paddle.width, ball.posX, ball.posY );
 }
 
 void render(){
@@ -113,15 +144,23 @@ void render(){
 
     SDL_RenderClear(renderer);
 
-    // draw here;
     SDL_Rect paddle_rect;
     paddle_rect.x = paddle.posX;
     paddle_rect.y = paddle.posY;
     paddle_rect.w = paddle.width;
     paddle_rect.h = paddle.height;
 
+    SDL_Rect ball_rect;
+    ball_rect.x = ball.posX;
+    ball_rect.y = ball.posY;
+    ball_rect.w = ball.width;
+    ball_rect.h = ball.height;
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255,255);
     SDL_RenderFillRect(renderer, &paddle_rect);
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0,255);
+    SDL_RenderFillRect(renderer, &ball_rect);
 
     SDL_RenderPresent(renderer);
 }
