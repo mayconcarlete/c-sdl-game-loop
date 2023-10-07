@@ -60,8 +60,8 @@ void setup(){
 
     ball.width = 15;
     ball.height = 15;
-    ball.velX = 90;
-    ball.velY = 100;
+    ball.velX = -190;
+    ball.velY = -100;
     ball.posX = WINDOW_WIDTH / 2;
     ball.posY = WINDOW_HEIGHT / 2;
 }
@@ -110,25 +110,25 @@ void update(){
     float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f;
     last_frame_time = SDL_GetTicks();
 
-    // it checks the collision with the paddle
-    if(
-        ball.posY + ball.height >= paddle.posY
-        && ball.posX <= paddle.posX + paddle.width
-        && ball.posX + ball.width >= paddle.posX
-        ){
-        ball.velY = -ball.velY;
-    }
-    // it checks for colission on top of the window
+    // it checks for colission on top of the window.
     if(ball.posY <= 0) {
         ball.velY = -ball.velY;
     }
-    // it checks for colision with right window
+    // it checks for colision with left window.
     if(ball.posX <= 0){
         ball.velX = - ball.velX;
     }
-    // it checks for colision with left window
+    // it checks for colision with right window.
     if(ball.posX + ball.width >= WINDOW_WIDTH){
         ball.velX = -ball.velX;
+    }
+
+    // it checks for the point and reset the game.
+    if(ball.posY + ball.height >= WINDOW_HEIGHT){
+        ball.velY = 100;
+        ball.velX = 200;
+        ball.posY = 200;
+        ball.posX = 200;
     }
 
 
