@@ -60,8 +60,8 @@ void setup(){
 
     ball.width = 15;
     ball.height = 15;
-    ball.velX = -190;
-    ball.velY = -100;
+    ball.velX = -90;
+    ball.velY = 100;
     ball.posX = WINDOW_WIDTH / 2;
     ball.posY = WINDOW_HEIGHT / 2;
 }
@@ -109,6 +109,12 @@ void update(){
 
     float delta_time = (SDL_GetTicks() - last_frame_time)/1000.0f;
     last_frame_time = SDL_GetTicks();
+
+    if(ball.posY + ball.height >= paddle.posY){
+        if(ball.posX > paddle.posX && ball.posX < paddle.posX + paddle.width){
+            ball.velY = -ball.velY;
+        }
+    }
 
     // it checks for colission on top of the window.
     if(ball.posY <= 0) {
